@@ -1,11 +1,11 @@
 {
-  "name": "location_maps_api",
+  "name": "my app",
   "version": "1.0.0",
-  "description": "suggesting hotels,etc near the position on a google map",
+  "description": "some description",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "nodemon server.js"
   },
   "author": "surya",
   "license": "ISC",
