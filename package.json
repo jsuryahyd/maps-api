@@ -1,7 +1,7 @@
 {
-  "name": "my app",
+  "name": "maps_api",
   "version": "1.0.0",
-  "description": "some description",
+  "description": "suggest places in location",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -10,8 +10,15 @@
   "author": "surya",
   "license": "ISC",
   "dependencies": {
+    "bulma": "^0.6.2",
     "express": "^4.16.3",
+    "font-awesome": "^4.7.0",
     "formidable": "^1.2.1",
     "morgan": "^1.9.0"
+  },
+  "nodemonConfig": {
+    "watch": [
+      "server.js"
+    ]
   }
 }

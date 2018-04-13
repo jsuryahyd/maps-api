@@ -1,14 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <link rel="stylesheet" href="css/normalize.css">
-    <link rel="stylesheet" href="css/skeleton.css">
+    <link rel="stylesheet" href="/bulma/bulma.css">
+    <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
-    
+    <nav class="level" id="topNavBar">
+        <div class="level-item has-text-centered">
+            <p class="title">Places</p>
+        </div>
+        <div class="level-item has-text-centered">
+            </div>
+            <div class="level-item has-text-centered">
+                </div>
+    </nav>
+    <main class="columns" style="margin-bottom: 0">
+
+        <div class="column is-one-quarter" id="sidebar__wrapper">
+            <aside id="sidebar">
+                something
+            </aside>
+        </div>
+        <div class="column" id="map__wrapper">
+            <section id="map"></section>
+        </div>
+
+    </main>
+
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBvePY2blJGcGgxftR467aWVB6QESjtFUQ">
+    </script>
+    <script src="js/mapConfig.js"></script>
+    <script src="js/map.js"></script>
+    <script>
+        window.onload = function () {
+            // console.log('before ',map.map)//undefined
+            map.initMap();
+            // console.log('after ',map.map)//undefined
+        }
+    </script>
 </body>
+
 </html>

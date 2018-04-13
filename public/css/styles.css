@@ -1,0 +1,39 @@
+:root{
+    --primaryColor:#4b7bec;
+    --secColor:#3867d6;
+}
+body{
+    padding-top: 50px;
+}
+#map__wrapper{
+    
+    background-color: #4b6584;
+}
+#map{
+    min-height: calc(100vh - 50px);
+    margin-left: -0.75rem;
+    margin-bottom: -0.75rem;
+}
+#topNavBar{
+    position: fixed;
+    height: 50px;
+    width: 100%;
+    left:0;
+    top:0;
+    background-color: var(--primaryColor);
+    color: white;
+    /* display: flex;
+    justify-content: space-between; */
+
+}
+
+
+#topNavBar__logo{
+    line-height: 50px;
+    margin: 0;
+}
+
+#sidebar__wrapper{
+    /* height: 100%;no need */
+    background-color: var(--secColor);
+}
