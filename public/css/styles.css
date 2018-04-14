@@ -28,12 +28,26 @@ body{
 }
 
 
-#topNavBar__logo{
-    line-height: 50px;
-    margin: 0;
+#logo{
+
+    justify-content: flex-start;
+    padding-left: 0.75rem;
+    color: white
+}
+
+#logo *{
+  color: inherit !important;  
 }
 
 #sidebar__wrapper{
     /* height: 100%;no need */
     background-color: var(--secColor);
+}
+
+#form{
+    padding:0.75rem
+}
+
+.has-text-white{
+    color: #d1d8e0 !important;
 }

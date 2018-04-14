@@ -12,19 +12,63 @@
 
 <body>
     <nav class="level" id="topNavBar">
-        <div class="level-item has-text-centered">
+        <div class="level-item" id="logo">
             <p class="title">Places</p>
         </div>
         <div class="level-item has-text-centered">
-            </div>
-            <div class="level-item has-text-centered">
-                </div>
+        </div>
+        <div class="level-item has-text-centered">
+        </div>
     </nav>
     <main class="columns" style="margin-bottom: 0">
 
         <div class="column is-one-quarter" id="sidebar__wrapper">
             <aside id="sidebar">
-                something
+                <div id="form" class="has-text-white">
+                    <div class="field">
+                        <label for="lat" class="label has-text-white">Latitude</label>
+                        <div class="control has">
+                            <input type="number" class="input" id="lat" placeholder="Latitude">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="lng" class="label has-text-white">Longitude</label>
+                        <div class="control has">
+                            <input type="number" class="input" id="lng" placeholder="Longitude">
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="loc" class="label has-text-white">Location</label>
+                        <div class="control has">
+                            <input type="text" id="loc" class="input" placeholder="Location">
+                        </div>
+                    </div>
+                    <div class="control">
+                            <button class="button is-primary" id="gotoBtn">Go To</button>
+                            
+                        </div>
+<br>
+                    <div class="field ">
+                            <label for="range" class="label has-text-white">Distance&nbsp;&nbsp;<small>(in km)</small></label>
+                            <div class="control has">
+                                <input type="number" id="range" class="input" placeholder="Distance" value=10>
+                            </div>
+                        </div>
+
+                    <div class="control">
+                
+                            <button class="button is-danger is-pulled-right" id="nearbyPlaces">Nearby Places</button>
+                        
+                    </div>
+                </div>
+                <br style="clear: both;"><br/>
+                <div class="notification is-info is-hidden" id="notification" style="margin:0 0.75rem">
+                        <button class="delete" onclick="this.parentNode.classList.add('is-hidden')"></button>
+                        <p><span id="numLocations"></span> places Located</p>
+                      </div>
+                      
             </aside>
         </div>
         <div class="column" id="map__wrapper">
@@ -32,16 +76,142 @@
         </div>
 
     </main>
-
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBvePY2blJGcGgxftR467aWVB6QESjtFUQ">
+    <!-- libraries=places for autocomplete.js -->
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBvePY2blJGcGgxftR467aWVB6QESjtFUQ&libraries=places">
     </script>
+
     <script src="js/mapConfig.js"></script>
     <script src="js/map.js"></script>
     <script>
+        let myApp
         window.onload = function () {
-            // console.log('before ',map.map)//undefined
-            map.initMap();
-            // console.log('after ',map.map)//undefined
+            nearbyPlaces = document.getElementById('nearbyPlaces');
+            lat = document.getElementById('lat');
+            lng = document.getElementById('lng');
+            gotoBtn = document.getElementById('gotoBtn');
+            loc = document.getElementById('loc');
+            range = document.getElementById('range')
+            //initialize app
+            myApp = App({ nearbyPlaces, lng, lat, loc, range, gotoBtn }, map);
+            //swiss place = lng:8.173828125,lat:47.07012182383309;
+            //tvisha = {lng:78.3884782,lat:17.442784}
+            // myApp.showNearestPoints({lng:8.173828125,lat:47.07012182383309},500000);
+
+        }
+    </script>
+    <script>
+    </script>
+    <!-- <script src="js/autoComplete.js"></script> -->
+    <script>
+        const App = function (dom, mapObj) {
+            let { lng, lat, nearbyPlaces, loc,range } = dom;
+            console.log(lng, lat)
+            //swiss place = lng:8.173828125,lat:47.07012182383309;
+            //tvisha = {lng:78.3884782,lat:17.442784}
+            let locationObj = {lng:8.173828125,lat:47.07012182383309}//defaulting to tvisha
+            let dist = 10000
+            let mainMap = mapObj.getMap();
+
+            function showNearestPoints(point, distance) {
+                point = point || locationObj;
+                distance = distance || dist;
+                console.log(point,distance);
+                data = { point, distance } 
+                console.log(data)               
+                getNearestPoints(data,restaurants=>{
+                    console.log('showing restaurants')
+                    map.addDataFromGeojsonObject(map.getMap(), restaurants);
+                    map.getMap().setZoom(5);
+                    numLocations.textContent = restaurants.length
+                    notification.classList.remove('is-hidden')
+                    
+                })
+                
+            }
+            
+            function getNearestPoints(data,cb){
+                //send req
+                let req = new XMLHttpRequest();
+                req.open('post', '/getNearestPoints');
+                req.setRequestHeader('content-type', 'application/json')
+                req.onerror = (err) => {
+                    console.log(err)
+                }
+                req.onload = () => {
+                    let restaurants = JSON.parse(req.responseText);
+                    console.log('fetched restaurants :',restaurants);                    
+                    cb(restaurants)
+
+                }
+                req.send(JSON.stringify(data));
+            }
+            /**
+             * gotoBtn - no arguments
+             * autocomplete - center is passed
+             */
+            function setPos(center) {
+                [...map.getMarkers()].map(marker=>{marker.setMap(null)});
+                map.emptyMarkers()
+                notification.classList.add('is-hidden')
+                center = center || {
+                    lat: Number(lat.value),
+                    lng: Number(lng.value)
+                }
+                setCurrentLocation(center)
+                map.setMapPosByPoints(locationObj);//sets marker
+            }
+
+            function getLocation() {
+                return locationObj;
+            }
+
+            function setCurrentLocation(loc) {
+                locationObj = loc;
+
+            }
+
+            function initAutocomplete() {
+                // Create the autocomplete object, restricting the search to geographical
+                // location types.
+                autocomplete = new google.maps.places.Autocomplete(
+                    /** @type {!HTMLInputElement} */(document.getElementById('loc')),
+                    { types: ['geocode'] });
+
+                autocomplete.addListener('place_changed', () => {
+                    if(loc.value == '') return false;
+                    lat.value = '';
+                    lng.value = '';
+                    var place = autocomplete.getPlace();
+                    console.log(place);
+                    let center = {
+                        lat: place.geometry.location.lat(),
+                        lng: place.geometry.location.lng()
+                    };
+                    setPos(center)
+                })
+            }
+
+            function init() {
+                // console.log('before ',map.map)//undefined
+                map.initMap(locationObj,10);
+                // console.log('after ',map.map)//undefined
+                gotoBtn.addEventListener('click', () => {
+                    setPos();
+                    loc.value = '';
+                })
+                nearbyPlaces.addEventListener('click', (event) => {
+                    showNearestPoints()
+                });
+
+                range.addEventListener('change',()=>{
+                    dist = range.value * 1000
+                })
+                initAutocomplete()
+
+            }
+            init();
+
+            return { showNearestPoints, setPos, getLocation, setCurrentLocation }
         }
     </script>
 </body>
