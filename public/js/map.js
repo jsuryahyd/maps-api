@@ -1,5 +1,5 @@
 const map = (function() {
-  const apiKey = "AIzaSyBvePY2blJGcGgxftR467aWVB6QESjtFUQ";
+  const apiKey = "YOURAPIKEY";
   let map;
   let marker;
   let markers = [];
