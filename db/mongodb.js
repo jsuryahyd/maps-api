@@ -76,40 +76,38 @@ function getNearestPoints({ lat, lng },dist,cb) {
     if (err) return console.log("cannot connect to mongoclient :\n", err);
     let db = client.db(dbName);
     
-    // let query = {
-    //  $or:[
-    //      {
-    //        "location":{$exists:true},
-    //         "location": {
-    //             // $exists:true,
-    //             $nearSphere: {
-    //                 $geometry: { type: "Point", coordinates: [lng, lat] },
-    //                 $maxDistance: dist
-    //             },
-    //             //$exists:true,                
+//     let query = {
+//      $or:[
+//          {
+//             "location": {
+//                 $exists:true,
+// "location":{                $nearSphere: {
+//   $geometry: { type: "Point", coordinates: [lng, lat] },
+//   $maxDistance: dist
+// },}
+                              
                
+//             }
+//          }
+//          ,{
+//             "geometry": {
+//                 $exists:true,
+//                 $nearSphere: {
+//                   $geometry: { type: "Point", coordinates: [lng, lat] },
+//                   $maxDistance: dist
+//                 }
+//               }
+//          }
+//      ]
+//     };
+    // let query =   {
+    //     "location": {
+    //         $nearSphere: {
+    //             $geometry: { type: "Point", coordinates: [lng, lat] },
+    //             $maxDistance: dist
     //         }
-    //      }
-    //      ,{
-    //       "geometry":{$exists:true},
-    //         "geometry": {
-    //             // $exists:true,
-    //             $nearSphere: {
-    //               $geometry: { type: "Point", coordinates: [lng, lat] },
-    //               $maxDistance: dist
-    //             }
-    //           }
-    //      }
-    //  ]
-    // };
-    let query =   {
-        "location": {
-            $nearSphere: {
-                $geometry: { type: "Point", coordinates: [lng, lat] },
-                $maxDistance: dist
-            }
-        }
-     }
+    //     }
+    //  }
 
      let aggregateQuery = {
        "$geoNear":{
