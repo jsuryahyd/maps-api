@@ -100,14 +100,14 @@ function getNearestPoints({ lat, lng },dist,cb) {
 //          }
 //      ]
 //     };
-    // let query =   {
-    //     "location": {
-    //         $nearSphere: {
-    //             $geometry: { type: "Point", coordinates: [lng, lat] },
-    //             $maxDistance: dist
-    //         }
-    //     }
-    //  }
+    let query =   {
+        "location": {
+            $nearSphere: {
+                $geometry: { type: "Point", coordinates: [lng, lat] },
+                $maxDistance: dist
+            }
+        }
+     }
 
      let aggregateQuery = {
        "$geoNear":{

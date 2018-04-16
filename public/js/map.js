@@ -1,5 +1,5 @@
 const map = (function() {
-  const apiKey = "GETYOURAPIKEY";//google project id : flawless-agency-158215(My Project 1)
+  const apiKey = "AIzaSyDAaOdd7xBOpJ1gKK7_fqInnCAmP3Ayl-M";//google project id : flawless-agency-158215(My Project 1)
   let map;
   let markers = [];
   let mapDiv = document.getElementById("map");
