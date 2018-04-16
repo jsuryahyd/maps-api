@@ -1,6 +1,7 @@
 :root{
     --primaryColor:#4b7bec;
     --secColor:#3867d6;
+    --app-white:#d1d8e0;
 }
 body{
     padding-top: 50px;
@@ -50,4 +51,15 @@ body{
 
 .has-text-white{
     color: #d1d8e0 !important;
+}
+
+#notification{
+    position: fixed;
+    margin: 0 0.75rem;
+    right: 1.25rem;
+    top: 75px;
+    min-width: 200px;
+    max-width:300px;
+    height: 70px;
+    z-index: 100;
 }

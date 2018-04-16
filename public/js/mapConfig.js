@@ -1,95 +1,104 @@
 const mapStyles = [
-    {
+  {
       "featureType": "administrative",
       "elementType": "all",
       "stylers": [
-        {
-          "visibility": "on"
-        },
-        {
-          "lightness": 33
-        }
+          {
+              "visibility": "on"
+          }
       ]
-    },
-    {
+  },
+  {
       "featureType": "landscape",
       "elementType": "all",
       "stylers": [
-        {
-          "color": "#f2e5d4"
-        }
+          {
+              "visibility": "off"
+          }
       ]
-    },
-    {
-      "featureType": "poi.park",
-      "elementType": "geometry",
+  },
+  {
+      "featureType": "poi",
+      "elementType": "all",
       "stylers": [
-        {
-          "color": "#c5dac6"
-        }
+          {
+              "visibility": "off"
+          }
       ]
-    },
-    {
-      "featureType": "poi.park",
-      "elementType": "labels",
-      "stylers": [
-        {
-          "visibility": "on"
-        },
-        {
-          "lightness": 20
-        }
-      ]
-    },
-    {
+  },
+  {
       "featureType": "road",
       "elementType": "all",
       "stylers": [
-        {
-          "lightness": 20
-        }
+          {
+              "visibility": "on"
+          }
       ]
-    },
-    {
-      "featureType": "road.highway",
-      "elementType": "geometry",
+  },
+  {
+      "featureType": "road",
+      "elementType": "labels",
       "stylers": [
-        {
-          "color": "#c5c6c6"
-        }
+          {
+              "visibility": "on"
+          }
       ]
-    },
-    {
-      "featureType": "road.arterial",
-      "elementType": "geometry",
+  },
+  {
+      "featureType": "transit",
+      "elementType": "all",
       "stylers": [
-        {
-          "color": "#e4d7c6"
-        }
+          {
+              "visibility": "on"
+          }
       ]
-    },
-    {
-      "featureType": "road.local",
-      "elementType": "geometry",
+  },
+  {
+      "featureType": "transit",
+      "elementType": "labels",
       "stylers": [
-        {
-          "color": "#fbfaf7"
-        }
+          {
+              "visibility": "on"
+          }
       ]
-    },
-    {
+  },
+  {
       "featureType": "water",
       "elementType": "all",
       "stylers": [
-        {
-          "visibility": "on"
-        },
-        {
-          "color": "#acbcc9"
-        }
+          {
+              "visibility": "on"
+          }
       ]
-    }
-  ];
+  },
+  {
+      "featureType": "water",
+      "elementType": "geometry",
+      "stylers": [
+          {
+              "color": "#12608d"
+          }
+      ]
+  },
+  {
+      "featureType": "water",
+      "elementType": "labels.text.fill",
+      "stylers": [
+          {
+              "visibility": "off"
+          }
+      ]
+  },
+  {
+      "featureType": "water",
+      "elementType": "labels.text.stroke",
+      "stylers": [
+          {
+              "visibility": "off"
+          }
+      ]
+  }
+];
 
   const madapurData = {
     type: 'FeatureCollection',

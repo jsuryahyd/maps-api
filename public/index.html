@@ -25,6 +25,15 @@
         <div class="column is-one-quarter" id="sidebar__wrapper">
             <aside id="sidebar">
                 <div id="form" class="has-text-white">
+
+                        <div class="field">
+                                <label for="loc" class="label has-text-white">Location</label>
+                                <div class="control has">
+                                    <input type="text" id="loc" class="input" placeholder="Location">
+                                </div>
+                            </div>
+<hr style="background-color:var(--app-white)">
+
                     <div class="field">
                         <label for="lat" class="label has-text-white">Latitude</label>
                         <div class="control has">
@@ -39,36 +48,34 @@
                         </div>
                     </div>
 
-                    <div class="field">
-                        <label for="loc" class="label has-text-white">Location</label>
-                        <div class="control has">
-                            <input type="text" id="loc" class="input" placeholder="Location">
+
+                    <div class="control is-clearfix">
+                        <button class="button is-primary is-pulled-right" id="gotoBtn">Go To</button>
+
+                    </div>
+                    
+                    <hr style="background-color:var(--app-white)">
+                    <div class="field ">
+                        <label for="range" class="label has-text-white">Distance&nbsp;&nbsp;
+                            <small>(in km)</small>
+                        </label>
+                        <div class="control">
+                            <input type="number" id="range" class="input" placeholder="Distance" value=10>
                         </div>
                     </div>
-                    <div class="control">
-                            <button class="button is-primary" id="gotoBtn">Go To</button>
-                            
-                        </div>
-<br>
-                    <div class="field ">
-                            <label for="range" class="label has-text-white">Distance&nbsp;&nbsp;<small>(in km)</small></label>
-                            <div class="control has">
-                                <input type="number" id="range" class="input" placeholder="Distance" value=10>
-                            </div>
-                        </div>
 
-                    <div class="control">
-                
-                            <button class="button is-danger is-pulled-right" id="nearbyPlaces">Nearby Places</button>
-                        
+                    <div class="control is-clearfix">
+                        <button class="button is-danger is-pulled-right" id="nearbyPlaces">Nearby Places</button>
+
                     </div>
                 </div>
-                <br style="clear: both;"><br/>
+                <!-- <br style="clear: both;"> -->
                 <div class="notification is-info is-hidden" id="notification" style="margin:0 0.75rem">
-                        <button class="delete" onclick="this.parentNode.classList.add('is-hidden')"></button>
-                        <p><span id="numLocations"></span> places Located</p>
-                      </div>
-                      
+                    <button class="delete" onclick="this.parentNode.classList.add('is-hidden')"></button>
+                    <p>
+                        <span id="numLocations"></span> places Located</p>
+                </div>
+
             </aside>
         </div>
         <div class="column" id="map__wrapper">
@@ -85,51 +92,77 @@
     <script>
         let myApp
         window.onload = function () {
+
+            //dom-cache
             nearbyPlaces = document.getElementById('nearbyPlaces');
             lat = document.getElementById('lat');
             lng = document.getElementById('lng');
             gotoBtn = document.getElementById('gotoBtn');
             loc = document.getElementById('loc');
-            range = document.getElementById('range')
+            range = document.getElementById('range');
+
             //initialize app
             myApp = App({ nearbyPlaces, lng, lat, loc, range, gotoBtn }, map);
-            //swiss place = lng:8.173828125,lat:47.07012182383309;
-            //tvisha = {lng:78.3884782,lat:17.442784}
-            // myApp.showNearestPoints({lng:8.173828125,lat:47.07012182383309},500000);
 
+            //set marker on click 
+            // https://stackoverflow.com/a/43122910/7314900                
+            // map.getMap().addListener('click',e=>{
+            //     setPos(e.latLng);
+            // })
         }
     </script>
     <script>
-    </script>
-    <!-- <script src="js/autoComplete.js"></script> -->
-    <script>
+        var rad = function(x) {
+            return x * Math.PI / 180;
+        };
+
+        var getDistance = function(p1, p2) {
+            var R = 6378137; // Earth’s mean radius in meter
+            var dLat = rad(p2.lat() - p1.lat());
+            var dLong = rad(p2.lng() - p1.lng());
+            var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(rad(p1.lat())) * Math.cos(rad(p2.lat())) *
+                Math.sin(dLong / 2) * Math.sin(dLong / 2);
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            var d = R * c;
+            return d; // returns the distance in meter
+        };
+
+
         const App = function (dom, mapObj) {
-            let { lng, lat, nearbyPlaces, loc,range } = dom;
-            console.log(lng, lat)
+            let { lng, lat, nearbyPlaces, loc, range } = dom;
+            console.log(lng, lat);
+            //budapest :{lat: 47.493055357063255, lng: 19.06242191791534}
             //swiss place = lng:8.173828125,lat:47.07012182383309;
             //tvisha = {lng:78.3884782,lat:17.442784}
-            let locationObj = {lng:8.173828125,lat:47.07012182383309}//defaulting to tvisha
-            let dist = 10000
-            let mainMap = mapObj.getMap();
+            let locationObj = { lng:-74.0060, lat:40.7128 }//set a default position
+            let dist = 10000;
+            let mainMap = mapObj.getMap();//undefined because initialising is set in navigator.geolocation which is asynchronous
+            console.log(mainMap)
+
 
             function showNearestPoints(point, distance) {
                 point = point || locationObj;
                 distance = distance || dist;
-                console.log(point,distance);
-                data = { point, distance } 
-                console.log(data)               
-                getNearestPoints(data,restaurants=>{
+                console.log(point, distance);
+                data = { point, distance }
+                getNearestPoints(data, restaurants => {
+                    clearMarkers();
                     console.log('showing restaurants')
                     map.addDataFromGeojsonObject(map.getMap(), restaurants);
-                    map.getMap().setZoom(5);
+                    map.getMap().setZoom(map.getMap().getZoom());
+
                     numLocations.textContent = restaurants.length
                     notification.classList.remove('is-hidden')
-                    
+                    // map.initInfoWindow(map.getMap());
+                    map.drawCircle(distance);
+
+
                 })
-                
+
             }
-            
-            function getNearestPoints(data,cb){
+
+            function getNearestPoints(data, cb) {
                 //send req
                 let req = new XMLHttpRequest();
                 req.open('post', '/getNearestPoints');
@@ -137,12 +170,14 @@
                 req.onerror = (err) => {
                     console.log(err)
                 }
+
                 req.onload = () => {
                     let restaurants = JSON.parse(req.responseText);
-                    console.log('fetched restaurants :',restaurants);                    
+                    console.log('fetched restaurants :', restaurants);
                     cb(restaurants)
 
                 }
+
                 req.send(JSON.stringify(data));
             }
             /**
@@ -150,15 +185,21 @@
              * autocomplete - center is passed
              */
             function setPos(center) {
-                [...map.getMarkers()].map(marker=>{marker.setMap(null)});
-                map.emptyMarkers()
-                notification.classList.add('is-hidden')
+                clearMarkers();
+                notification.classList.add('is-hidden');
                 center = center || {
                     lat: Number(lat.value),
                     lng: Number(lng.value)
                 }
                 setCurrentLocation(center)
                 map.setMapPosByPoints(locationObj);//sets marker
+                mapObj.getMap().panTo(center);
+            }
+
+            function clearMarkers() {
+                [...map.getMarkers()].map(marker => { marker.setMap(null) });
+                
+                map.emptyMarkers();
             }
 
             function getLocation() {
@@ -167,6 +208,8 @@
 
             function setCurrentLocation(loc) {
                 locationObj = loc;
+                lat.value = loc.lat;
+                lng.value = loc.lng;
 
             }
 
@@ -178,11 +221,11 @@
                     { types: ['geocode'] });
 
                 autocomplete.addListener('place_changed', () => {
-                    if(loc.value == '') return false;
+                    if (loc.value == '') return false;
                     lat.value = '';
                     lng.value = '';
                     var place = autocomplete.getPlace();
-                    console.log(place);
+                    // console.log(place);
                     let center = {
                         lat: place.geometry.location.lat(),
                         lng: place.geometry.location.lng()
@@ -191,25 +234,60 @@
                 })
             }
 
-            function init() {
+            function initMap(loc,zoom) {
+                navigator.geolocation.getCurrentPosition(
+                    pos => {
+                        console.log("position acquired");
+                        let center = {
+                            lat: pos.coords.latitude,
+                            lng: pos.coords.longitude
+                        };
+                        // c = { lat: 52.632469, lng: -1.689423 };
+                        map.showMapAndData(center, "Current Location", zoom,setCurrentLocation);
+                        setCurrentLocation(center)
+                    },
+                    err => {
+                        console.log(err); // {code:1,message:"User denied Geolocation"}
+                        center = loc || {
+                            lat: 40.7128,
+                            lng: -74.0060
+                        };
+                        console.log(err.message);
+                        map.showMapAndData(center, "Some Location", 10,setCurrentLocation);
+
+                        setCurrentLocation(center)
+                    }
+                );
+            }
+
+            (function init() {
                 // console.log('before ',map.map)//undefined
-                map.initMap(locationObj,10);
+                initMap(locationObj, 14);
                 // console.log('after ',map.map)//undefined
                 gotoBtn.addEventListener('click', () => {
-                    setPos();
-                    loc.value = '';
+                    if((Number(lat.value) != getLocation().lat) || (Number(lng.value) != getLocation().lng)){
+                        setPos();
+                        loc.value = '';
+                    }
+                    
                 })
                 nearbyPlaces.addEventListener('click', (event) => {
                     showNearestPoints()
                 });
 
-                range.addEventListener('change',()=>{
+                range.addEventListener('change', () => {
                     dist = range.value * 1000
+                });
+
+                range.addEventListener('keyup',(e)=>{
+                    if(e.keyCode == 13){
+                        showNearestPoints();
+                    }
                 })
+
                 initAutocomplete()
 
-            }
-            init();
+            })();
 
             return { showNearestPoints, setPos, getLocation, setCurrentLocation }
         }

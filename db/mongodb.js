@@ -52,13 +52,14 @@ function setValuesFromFile(collectionName, filename) {
   mongoClient.connect(url, (err, client) => {
     if (err) console.log(err);
     const db = client.db(dbName);
-    let arr = fs.readFile(
-      path.join(__dirname, "../public/js/", filename),
+    fs.readFile(
+      // path.join(__dirname, "../public/js/", filename),
+      filename,
       "utf8",
       (err, data) => {
         if (err) return console.log("couldnot read the file ------\n", err);
         console.log(data);
-        let arr = JSON.parse(data);
+        let arr = JSON.parse(data).features;
         db.collection(collectionName).insertMany(arr, (err, res) => {
           if (err) console.log("error inserting documents :", err);
           return console.log(`Inserted ${res.insertedCount} documents`);
@@ -74,21 +75,25 @@ function getNearestPoints({ lat, lng },dist,cb) {
   mongoClient.connect(url, (err, client) => {
     if (err) return console.log("cannot connect to mongoclient :\n", err);
     let db = client.db(dbName);
-    let param = 'geometry';
-    // param = "location"
+    
     // let query = {
     //  $or:[
     //      {
+    //        "location":{$exists:true},
     //         "location": {
+    //             // $exists:true,
     //             $nearSphere: {
     //                 $geometry: { type: "Point", coordinates: [lng, lat] },
     //                 $maxDistance: dist
     //             },
-    //             $exists:"true"
+    //             //$exists:true,                
+               
     //         }
-    //      },{
+    //      }
+    //      ,{
+    //       "geometry":{$exists:true},
     //         "geometry": {
-    //             $exists:true,
+    //             // $exists:true,
     //             $nearSphere: {
     //               $geometry: { type: "Point", coordinates: [lng, lat] },
     //               $maxDistance: dist
@@ -105,11 +110,23 @@ function getNearestPoints({ lat, lng },dist,cb) {
             }
         }
      }
+
+     let aggregateQuery = {
+       "$geoNear":{
+         "near":{
+                $geometry: { type: "Point", coordinates: [lng, lat] },
+                $maxDistance: dist
+            },
+            distanceField:"distance"
+         
+       }
+     }
     // query = {};
     db
-    //   .collection("madapur")
+      // .collection("budapest_restaurants")
     .collection('restaurants')
       .find(query)
+      // .aggregate(aggregateQuery)
       .toArray((err, results) => {
           if (err) return cb(err,null)
         // results.map(res => {
@@ -126,5 +143,5 @@ function getNearestPoints({ lat, lng },dist,cb) {
   });
 }
 
-// setValues('areas','madapur.geojson');
+// setValuesFromFile('budapest_restaurants','/Users/Tvsiah-pc/Downloads/budapest.geojson');
 module.exports = { getAreaPoints, setValuesFromFile,getNearestPoints };
